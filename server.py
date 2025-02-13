@@ -52,8 +52,7 @@ def emotion_detect():
     except HTTPError as e:
         if e.response.status_code == 400:
             return format_output(emotion_dict)
-        else:
-            return "Invalid input! Try again."
+        return "Invalid input! Try again."
     except Exception:
         return "Invalid input! Try again."
 
