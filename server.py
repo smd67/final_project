@@ -22,12 +22,11 @@ def emotion_detect():
     text = request.args.get('textToAnalyze')
     try:
         emotion_dict = emotion_detector(text)
-    
         return ("For the given statement, the system response is "
                 + f"'anger': {emotion_dict['anger']}, "
                 + f"'disgust': {emotion_dict['disgust']}, 'fear': {emotion_dict['fear']}, "
                 + f"'joy': {emotion_dict['joy']} and 'sadness': {emotion_dict['sadness']}. "
-                + f"The dominant emotion is {emotion_dict['dominant']}.")
+                + f"The dominant emotion is {emotion_dict['dominant_emotion']}.")
     except Exception:
         return "Invalid input! Try again."
 
