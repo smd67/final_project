@@ -18,11 +18,13 @@ def format_output(emotion_dict: dict) -> str:
     This function formats the output of the emotion detection
     function into a readable format.
     '''
-    return ("For the given statement, the system response is "
+    retval = ("For the given statement, the system response is "
             + f"'anger': {emotion_dict.get('anger', None)}, "
             + f"'disgust': {emotion_dict.get('disgust', None)}, 'fear': {emotion_dict.get('fear', None)}, "
             + f"'joy': {emotion_dict.get('joy', None)} and 'sadness': {emotion_dict.get('sadness', None)}. "
             + f"The dominant emotion is {emotion_dict.get('dominant_emotion', None)}.")
+    # Return "Invalid input! Try again." if emotion_dict['dominant_emotion'] is None.
+    return retval if emotion_dict.get('dominant_emotion', None) else "Invalid input! Try again."
 
 @app.route("/emotionDetector")
 def emotion_detect():
