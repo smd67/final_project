@@ -66,7 +66,7 @@ class Prediction(BaseModel):
     emotionPredictions: List[EmotionPredictions]
     producerId: ProducerId
 
-def emotion_detector(text_to_analyse: str) -> str:
+def emotion_detector(text_to_analyse: str) -> dict:
     """
     Analyze the sentiment of the given text using the emotion detection model.
     """
@@ -85,3 +85,19 @@ def emotion_detector(text_to_analyse: str) -> str:
     dominant_emotion = max(emotions, key=emotions.get)
     emotions['dominant_emotion'] = dominant_emotion
     return emotions
+
+def emotion_detector_raw(text_to_analyse: str) -> dict:
+    """
+    Analyze the sentiment of the given text using the emotion detection model.
+    """
+    print(f"Analyzing emotion: {text_to_analyse}")
+    url = URL
+    headers = HEADERS
+
+    # deep copy of the json object INPUT_JSON
+    myobj = INPUT_JSON.copy()
+    myobj["raw_document"]["text"] = text_to_analyse
+
+    response = requests.post(url, json=myobj, headers=headers, timeout=TIMEOUT_VALUE)
+    response.raise_for_status()
+    return response.json()
