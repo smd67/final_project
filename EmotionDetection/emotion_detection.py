@@ -19,52 +19,65 @@ HEADERS = {"grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_sto
 INPUT_JSON = {"raw_document": {"text": None}}
 TIMEOUT_VALUE = 30
 
+
 class ProducerId(BaseModel):
-    '''
+    """
     ProducerId model
-    '''
+    """
+
     name: str
     version: str
 
+
 class Emotion(BaseModel):
-    '''
+    """
     Emotion model
-    '''
+    """
+
     anger: float
     disgust: float
     fear: float
     joy: float
     sadness: float
 
+
 class Span(BaseModel):
-    '''
+    """
     Span model
-    '''
+    """
+
     begin: int
     end: int
     text: str
 
+
 class EmotionMentions(BaseModel):
-    '''
+    """
     EmotionMentions model
-    '''
+    """
+
     span: Span
     emotion: Emotion
 
+
 class EmotionPredictions(BaseModel):
-    '''
+    """
     EmotionPredictions model
-    '''
+    """
+
     emotion: Emotion
     target: str
     emotionMentions: List[EmotionMentions]
 
+
 class Prediction(BaseModel):
-    '''
+    """
     Prediction model
-    '''
+    """
+
     emotionPredictions: List[EmotionPredictions]
     producerId: ProducerId
+
 
 def emotion_detector(text_to_analyse: str) -> dict:
     """
@@ -83,8 +96,9 @@ def emotion_detector(text_to_analyse: str) -> dict:
     prediction = Prediction.model_validate(response.json())
     emotions = prediction.emotionPredictions[0].emotion.model_dump().copy()
     dominant_emotion = max(emotions, key=emotions.get)
-    emotions['dominant_emotion'] = dominant_emotion
+    emotions["dominant_emotion"] = dominant_emotion
     return emotions
+
 
 def emotion_detector_raw(text_to_analyse: str) -> dict:
     """
