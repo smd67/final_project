@@ -5,11 +5,24 @@ by Flask and deployed on localhost:5000.
 
 from flask import Flask, render_template, request
 from EmotionDetection.emotion_detection import emotion_detector
+from requests.exceptions import HTTPError
 
 # pylint: disable=W0718
 
 #Initiate the flask app
 app = Flask(__name__)
+
+
+def format_output(emotion_dict: dict) -> str:
+    ''' 
+    This function formats the output of the emotion detection
+    function into a readable format.
+    '''
+    return ("For the given statement, the system response is "
+            + f"'anger': {emotion_dict.get('anger', None)}, "
+            + f"'disgust': {emotion_dict.get('disgust', None)}, 'fear': {emotion_dict.get('fear', None)}, "
+            + f"'joy': {emotion_dict.get('joy', None)} and 'sadness': {emotion_dict.get('sadness', None)}. "
+            + f"The dominant emotion is {emotion_dict.get('dominant_emotion', None)}.")
 
 @app.route("/emotionDetector")
 def emotion_detect():
@@ -20,13 +33,15 @@ def emotion_detect():
     each emotion and the dominant emotion of the text..
     '''
     text = request.args.get('textToAnalyze')
+    emotion_dict = {}
     try:
         emotion_dict = emotion_detector(text)
-        return ("For the given statement, the system response is "
-                + f"'anger': {emotion_dict['anger']}, "
-                + f"'disgust': {emotion_dict['disgust']}, 'fear': {emotion_dict['fear']}, "
-                + f"'joy': {emotion_dict['joy']} and 'sadness': {emotion_dict['sadness']}. "
-                + f"The dominant emotion is {emotion_dict['dominant_emotion']}.")
+        return format_output(emotion_dict)
+    except HTTPError as e:
+        if e.response.status_code == 400:
+            return format_output(emotion_dict)
+        else:
+            return "Invalid input! Try again."
     except Exception:
         return "Invalid input! Try again."
 
